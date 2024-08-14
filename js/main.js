@@ -29,14 +29,15 @@ const servicios = [
 ];
 
 
+const container = document.getElementById("container");
+
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-const container = document.getElementById("container");
 
 function agregarAlCarrito(servicio) {
 
     if (carrito.some(el => el.id === servicio.id)) {
-        const indexProducto = carrito.findIndex(el => el.id === servicio.id);
+        const indexServicio = carrito.findIndex(el => el.id === servicio.id);
         carrito[indexServicio].cantidad += 1;
         carrito[indexServicio].subtotal = carrito[indexServicio].cantidad * carrito[indexServicio].precio;
     } else {
@@ -63,16 +64,7 @@ function limpiarCarrito() {
     };
 };
 
-function mostrarExperiencia() {
-    const arrayExperiencia = usuarios.filter(el => el.ExperienciaTermal);
-    let mensajeFinal = "Estos son los servicios Experiencia Termal:\n";
 
-    arrayExperiencia.forEach((el, index) => {
-        mensajeFinal += `\n${index + 1}) ${el.nombre}`
-    });
-
-    alert(mensajeFinal);
-};
 
 
 function crearCard(servicio) {
@@ -111,26 +103,20 @@ const mostrar = document.createElement("button");
 mostrar.innerText = "Mostrar carrito";
 
 mostrar.addEventListener("click", () => {
-    alert("Mostrando tu carrito", carrito);
+    console.log("Mostrando tu carrito", carrito);
 });
 
 const limpiar = document.createElement("button");
 limpiar.innerText = "Limpiar carrito";
 
 limpiar.addEventListener("click", () => {
-    carrito = [];
+    limpiarCarrito();
     localStorage.setItem("carrito", JSON.stringify(carrito));
     
 });
 
-const verExperiencia = document.createElement("button");
-verExperiencia.innerText = "Ver servicios Experiencia Termal";
 
-verExperiencia.addEventListener("click", () => {
-    mostrarExperiencia();
-    
-});
 
 container.append(mostrar);
 container.append(limpiar);
-container.append(ver);
+
