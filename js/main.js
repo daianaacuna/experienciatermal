@@ -1,0 +1,106 @@
+
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+const container = document.getElementById("container");
+
+function agregarAlCarrito(servicio) {
+
+    if (carrito.some(el => el.id === servicio.id)) {
+        const indexProducto = carrito.findIndex(el => el.id === servicio.id);
+        carrito[indexServicio].cantidad += 1;
+        carrito[indexServicio].subtotal = carrito[indexServicio].cantidad * carrito[indexServicio].precio;
+    } else {
+        const nuevoServicio = {
+            ...servicio,
+            cantidad: 1,
+            subtotal: servicio.precio,
+        };
+        carrito.push(nuevoServicio);
+    };
+
+    alert(`Servicio ${servicio.nombre} agregado correctamente`);
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+};
+
+
+function limpiarCarrito() {
+    if (carrito.length > 0) {
+        localStorage.clear();
+        carrito = [];
+        alert("Listo! Limpiaste tu carrito!");
+    } else {
+        alert("Aun no llenaste tu carrito!");
+    };
+};
+
+function mostrarExperiencia() {
+    const arrayExperiencia = usuarios.filter(el => el.ExperienciaTermal);
+    let mensajeFinal = "Estos son los servicios Experiencia Termal:\n";
+
+    arrayExperiencia.forEach((el, index) => {
+        mensajeFinal += `\n${index + 1}) ${el.nombre}`
+    });
+
+    alert(mensajeFinal);
+};
+
+
+function crearCard(servicio) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.id= `service - ${servicio.id}`
+
+
+    const titulo = document.createElement("h3");
+    titulo.innerText = `Servicio : ${servicio.nombre}`;
+
+
+
+    const imagen = document.createElement("img");
+    imagen.src = "https://media.istockphoto.com/id/1295701453/es/vector/servicios-del-hotel-y-personal-del-hotel-objetos-dibujados-a-mano-ilustraci%C3%B3n-vectorial.jpg?s=612x612&w=0&k=20&c=ORr8jCLrvrIhTlEWlME9uj0lebN08O584Bx-Po_p-1M=";
+    imagen.className = "img";
+
+    const precio = document.createElement("p");
+    precio.innerText = `$${servicio.precio}`;
+
+    const boton = document.createElement("button");
+    boton.innerText = "Agregar al carrito";
+    boton.onclick = () => agregarAlCarrito(servicio);
+
+    card.append(titulo);
+    card.append(imagen);
+    card.append(precio);
+    card.append(boton);
+
+    container.append(card);
+};
+
+servicios.forEach(el => crearCard(el));
+
+const mostrar = document.createElement("button");
+mostrar.innerText = "Mostrar carrito";
+
+mostrar.addEventListener("click", () => {
+    alert("Mostrando tu carrito", carrito);
+});
+
+const limpiar = document.createElement("button");
+limpiar.innerText = "Limpiar carrito";
+
+limpiar.addEventListener("click", () => {
+    carrito = [];
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    
+});
+
+const verExperiencia = document.createElement("button");
+verExperiencia.innerText = "Ver servicios Experiencia Termal";
+
+verExperiencia.addEventListener("click", () => {
+    mostrarExperiencia();
+    
+});
+
+container.append(mostrar);
+container.append(limpiar);
+container.append(ver);
