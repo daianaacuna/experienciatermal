@@ -49,7 +49,11 @@ function agregarAlCarrito(servicio) {
         carrito.push(nuevoServicio);
     };
 
-    alert(`Servicio ${servicio.nombre} agregado correctamente`);
+    Toastify({
+        text: `${producto.nombre} agregado al carrito`,
+        gravity: "bottom",
+    }).showToast();
+
     localStorage.setItem("carrito", JSON.stringify(carrito));
 };
 
