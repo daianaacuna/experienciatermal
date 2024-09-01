@@ -1,32 +1,3 @@
-const servicios = [
-    {
-        id: 1,
-        nombre: "Masajes relajantes full",
-        precio: 15000,
-        ExperienciaTermal: false,
-        
-    },
-    {   
-        id: 2,
-        nombre: "Cena Bodega y maridajes",
-        precio: 80000,
-        ExperienciaTermal: true,
-
-    },
-    {
-        id: 3,
-        nombre: "Full termal spa day",
-        precio: 50000,
-        ExperienciaTermal: true,
-    },
-    {
-        id: 4,
-        nombre: "Evening late check out",
-        precio: 120000,
-        ExperienciaTermal: true,
-    },
-
-];
 
 
 const container = document.getElementById("container");
@@ -50,25 +21,12 @@ function agregarAlCarrito(servicio) {
     };
 
     Toastify({
-        text: `${producto.nombre} agregado al carrito`,
+        text: `${servicio.nombre} agregado al carrito con exito!`,
         gravity: "bottom",
     }).showToast();
 
     localStorage.setItem("carrito", JSON.stringify(carrito));
 };
-
-
-function limpiarCarrito() {
-    if (carrito.length > 0) {
-        localStorage.clear();
-        carrito = [];
-        alert("Listo! Limpiaste tu carrito!");
-    } else {
-        alert("Aun no llenaste tu carrito!");
-    };
-};
-
-
 
 
 function crearCard(servicio) {
@@ -101,26 +59,93 @@ function crearCard(servicio) {
     container.append(card);
 };
 
-servicios.forEach(el => crearCard(el));
 
-const mostrar = document.createElement("button");
-mostrar.innerText = "Mostrar carrito";
+function mostrarCarrito(servicio) {
+    const card = document.createElement("div");
+    card.className = "card";
 
-mostrar.addEventListener("click", () => {
-    console.log("Mostrando tu carrito", carrito);
-});
+    const titulo = document.createElement("h3");
+    titulo.innerText = servicio.nombre;
 
-const limpiar = document.createElement("button");
-limpiar.innerText = "Limpiar carrito";
+    const imagen = document.createElement("img");
+    imagen.src = "https://media.istockphoto.com/id/1295701453/es/vector/servicios-del-hotel-y-personal-del-hotel-objetos-dibujados-a-mano-ilustraci%C3%B3n-vectorial.jpg?s=612x612&w=0&k=20&c=ORr8jCLrvrIhTlEWlME9uj0lebN08O584Bx-Po_p-1M=";
+    imagen.className = "img";
 
-limpiar.addEventListener("click", () => {
-    limpiarCarrito();
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-    
-});
+    const precio = document.createElement("p");
+    precio.innerText = `$${servicio.precio}`;
+
+    const boton = document.createElement("button");
+    boton.innerText = "Agregar al carrito";
+    boton.onclick = () => agregarAlCarrito(servicio);
+
+    card.append(titulo);
+    card.append(imagen);
+    card.append(precio);
+    card.append(boton);
+
+    document.getElementById("div-carrito").append(card);
+};
+
+
+container.innerHTML = `<span class="loader"></span>`
+
+fetch('./data.json')
+    .then(response => response.json())
+    .then(servicios => {
+        setTimeout(() => {
+            container.innerHTML = ``
+            servicios.forEach(el => crearCard(el));
+            const mostrar = document.createElement("button");
+            mostrar.innerText = "Mostrar carrito";
+
+            mostrar.addEventListener("click", () => {
+                document.getElementById("div-carrito").innerHTML = "";
+                carrito.forEach(el => mostrarCarrito(el));
+            });
+
+            const limpiar = document.createElement("button");
+            limpiar.innerText = "Limpiar carrito";
+
+            limpiar.addEventListener("click", () => {
+                if (carrito.length > 0) {
+                    Swal.fire({
+                        title: 'Está seguro de que quiere limpiar su carrito?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, limpiar carrito',
+                        cancelButtonText: 'No limpiar carrito'
+                    })
+                    .then(result => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: "Qué lástima!",
+                                text: "Limpiaste tu carrito",
+                                icon: "error",
+                            });
+                            carrito = [];
+                            localStorage.setItem("carrito", JSON.stringify(carrito));
+                        } else {
+                            Swal.fire({
+                                title: "Genial!",
+                                text: "Tu carrito no fue eliminado",
+                                icon: "success",
+                            });
+                        };
+                    });
+            } else {
+                Toastify({
+                    text: "Tu carrito está vacío!",
+                }).showToast();
+            }
+        });
+
+        container.append(mostrar);
+        container.append(limpiar);
+        }, 2000);
+    })
 
 
 
-container.append(mostrar);
-container.append(limpiar);
+
+
 
